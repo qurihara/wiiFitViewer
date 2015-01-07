@@ -23,20 +23,6 @@ namespace WiiFitViewer
             Control.CheckForIllegalCrossThreadCalls = false;  
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            //Wiimoteの接続
-            this.wm.Connect();
-
-            //イベント関数の登録
-            this.wm.WiimoteChanged += wm_WiimoteChanged;
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            this.wm.Disconnect();//Wiiリモコンを切断
-        }
-
         void wm_WiimoteChanged(object sender, WiimoteChangedEventArgs args)
         {
             //WiimoteStateの値を取得
@@ -64,18 +50,35 @@ namespace WiiFitViewer
             Graphics g = this.pictureBox1.CreateGraphics();
             g.Clear(Color.Black);     //画面を黒色にクリア
 
+            float cx = this.pictureBox1.Width / 2f;
+            float cy = this.pictureBox1.Height / 2f;
+            float xfac = this.pictureBox1.Width / 40f;
+            float yfac = this.pictureBox1.Height / 24f;
             //X、Y座標の計算
-            float x =
-                (wm.WiimoteState.BalanceBoardState.CenterOfGravity.X
-                + 20.0f) * 10;    //表示位置(X座標)を求める
-            float y =
-                (wm.WiimoteState.BalanceBoardState.CenterOfGravity.Y
-                + 12.0f) * 10;    //表示位置(Y座標)を求める
+            float x = cx + 
+                (wm.WiimoteState.BalanceBoardState.CenterOfGravity.X) * xfac;    //表示位置(X座標)を求める
+            float y = cy + 
+                (wm.WiimoteState.BalanceBoardState.CenterOfGravity.Y) * yfac;    //表示位置(Y座標)を求める
 
             //赤色でマーカを描写
-            g.FillEllipse(Brushes.Red, x, y, 10, 10);
+            int rad = 30;
+            g.FillEllipse(Brushes.White, cx -rad / 2f, cy -rad / 2f, 30, 30);
+            g.FillEllipse(Brushes.Red, x - rad / 2f, y - rad / 2f, 30, 30);
 
             g.Dispose();  //グラフィックスを開放
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            //Wiimoteの接続
+            this.wm.Connect();
+            //イベント関数の登録
+            this.wm.WiimoteChanged += wm_WiimoteChanged;
+        }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            this.wm.Disconnect();//Wiiリモコンを切断
         }
     }
 }
