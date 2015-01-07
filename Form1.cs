@@ -78,6 +78,10 @@ namespace WiiFitViewer
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
             this.wm.Disconnect();//Wiiリモコンを切断
         }
     }
