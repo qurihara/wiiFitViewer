@@ -16,6 +16,8 @@ namespace WiiFitViewer
     {
         Wiimote wm = new Wiimote();
 
+        float maxw = 0f;
+
         public Form1()
         {
             InitializeComponent();
@@ -27,6 +29,8 @@ namespace WiiFitViewer
         {
             //WiimoteStateの値を取得
             WiimoteState ws = args.WiimoteState;
+
+            if (ws.BalanceBoardState.WeightKg <= 0) return;
 
             //ピクチャーボックスへ描画
             this.DrawForms(ws);
@@ -41,6 +45,10 @@ namespace WiiFitViewer
             //重心のY座標表示
             this.label3.Text = "Y:" +
                 ws.BalanceBoardState.CenterOfGravity.Y;
+
+            if (ws.BalanceBoardState.WeightKg > maxw) maxw = ws.BalanceBoardState.WeightKg;
+
+            this.label4.Text = maxw.ToString();
         }
 
         //フォーム描写関数
@@ -62,7 +70,7 @@ namespace WiiFitViewer
 
             //赤色でマーカを描写
             int rad = 30;
-            g.FillEllipse(Brushes.White, cx -rad / 2f, cy -rad / 2f, 30, 30);
+            //g.DrawEllipse(Pens.White, cx -rad / 2f, cy -rad / 2f, 30, 30);
             g.FillEllipse(Brushes.Red, x - rad / 2f, y - rad / 2f, 30, 30);
 
             g.Dispose();  //グラフィックスを開放
